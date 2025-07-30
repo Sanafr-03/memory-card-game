@@ -1,0 +1,691 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "New Rocker", system-ui;
+            font-weight: 400;
+            font-style: normal;
+            background-color: #000000;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}     
+        /* Header Container */
+        .header-container {
+            position: relative;
+            min-height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(0, 191, 255, 0.15) 0%, transparent 40%),
+                linear-gradient(135deg, #000000 0%, #111111 50%, #000000 100%);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* HUD Elements */
+        .hud-element {
+            position: absolute;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .hud-corner {
+            width: 120px;
+            height: 120px;
+            border: 3px solid;
+            border-image: linear-gradient(45deg, #8a2be2, #00bfff) 1;
+        }
+        
+        .hud-top-left {
+            top: 20px;
+            left: 20px;
+            border-right: none;
+            border-bottom: none;
+            clip-path: polygon(0 0, 100% 0, 100% 30%, 30% 30%, 30% 100%, 0 100%);
+            animation-delay: 0.2s;
+        }
+        
+        .hud-top-right {
+            top: 20px;
+            right: 20px;
+            border-left: none;
+            border-bottom: none;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 70% 100%, 70% 30%, 0 30%);
+            animation-delay: 0.4s;
+        }
+        
+        .hud-bottom-left {
+            bottom: 20px;
+            left: 20px;
+            border-right: none;
+            border-top: none;
+            clip-path: polygon(0 0, 30% 0, 30% 70%, 100% 70%, 100% 100%, 0 100%);
+            animation-delay: 0.6s;
+        }
+        
+        .hud-bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-left: none;
+            border-top: none;
+            clip-path: polygon(0 70%, 70% 70%, 70% 0, 100% 0, 100% 100%, 0 100%);
+            animation-delay: 0.8s;
+        }
+        
+        /* New HUD Elements */
+        .hud-vertical {
+            width: 4px;
+            height: 200px;
+            background: linear-gradient(to bottom, transparent, #8a2be2, #00bfff, transparent);
+            animation-delay: 1s;
+        }
+        
+        .hud-horizontal {
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(to right, transparent, #8a2be2, #00bfff, transparent);
+            animation-delay: 1.2s;
+        }
+        
+        .hud-center {
+            width: 280px;
+            height: 90px;
+            border: 3px solid;
+            border-image: linear-gradient(45deg, #8a2be2, #00bfff) 1;
+            border-radius: 50%;
+            animation-delay: 1.4s;
+        }
+        
+        /* Circuit Lines */
+        .circuit-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.5), transparent);
+            z-index: 0;
+            animation: circuitPulse 4s infinite ease-in-out;
+        }
+        
+        /* Control Circuit Lines */
+        .control-circuit {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.5), transparent);
+            z-index: 1;
+            animation: circuitPulse 4s infinite ease-in-out;
+        }
+        
+        /* Floating Cards Animation */
+        .floating-card {
+            position: absolute;
+            width: 70px;
+            height: 100px;
+            background: #111111;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5),
+                        inset 0 0 0 2px #00bfff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            color: #00bfff;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: cardAppear 0.5s forwards, float 6s infinite ease-in-out;
+            z-index: 2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        
+        .floating-card:hover, .floating-card:active {
+            transform: translateY(-10px) rotate(5deg) scale(1.1) !important;
+            box-shadow: 0 0 25px rgba(138, 43, 226, 0.8), 
+                        inset 0 0 0 2px #8a2be2;
+            background: #222222;
+            color: #8a2be2;
+            filter: drop-shadow(0 0 10px #00bfff);
+        }
+        
+        /* Mobile touch active state */
+        .floating-card.touch-active {
+            transform: translateY(-10px) rotate(5deg) scale(1.1) !important;
+            box-shadow: 0 0 25px rgba(138, 43, 226, 0.8), 
+                        inset 0 0 0 2px #8a2be2;
+            background: #222222;
+            color: #8a2be2;
+            filter: drop-shadow(0 0 10px #00bfff);
+        }
+        
+        /* Main Title */
+        .main-title {
+    font-family: "New Rocker", system-ui;
+    font-weight: 900;
+    font-size: 3.5rem;
+    color: white;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 3;
+    text-shadow: 0 0 8px #8a2be2, 0 0 8px #00bfff;
+    text-align: center;
+    width: 100%;
+    opacity: 0;
+    transform: translateX(-50px);
+    animation: titleSlideIn 1s forwards 1.5s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+
+        
+        .title-word {
+            display: inline-block;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+        
+        .title-line-1 {
+    display: inline-block;
+    letter-spacing: 9px; 
+    white-space: nowrap;
+}
+
+.title-line-2 {
+    display: inline-block;
+    letter-spacing: 9px;
+    margin-top: 10px; }
+.title-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: decodeChar 0.5s forwards;
+}
+
+.title-space {
+    display: inline-block;
+    width: 15px; /* Adjust space between words */
+}
+
+        @media (max-width: 768px) {
+    .main-title {
+        font-size: 2.5rem;
+    }
+    .title-line-1,
+    .title-line-2 {
+        letter-spacing: 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 2rem;
+    }
+    .title-line-1,
+    .title-line-2 {
+        letter-spacing: 1px;
+        word-spacing: 1px;
+    }
+}
+
+@media (max-width: 360px) {
+    .main-title {
+        font-size: 1.8rem;
+    }
+    .title-line-1,
+    .title-line-2 {
+        letter-spacing: 1px;
+    }
+}
+        /* Slogan */
+        .slogan {
+            font-size: 1.3rem;
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateX(50px);
+            animation: subtitleSlideIn 1s forwards 2.2s;
+            color: #aaaaaa;
+            position: relative;
+            z-index: 3;
+            letter-spacing: 1px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        
+        /* Start Button */
+        .start-btn {
+            padding: 16px 50px;
+            font-size: 1.5rem;
+            background: linear-gradient(145deg, #8a2be2, #00bfff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5),
+                       0 0 15px rgba(0, 191, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.5);
+            animation: buttonScaleUp 0.8s forwards 2.5s, pulse 2s infinite 3.3s;
+            z-index: 3;
+            word-spacing: 20px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-family: "New Rocker", system-ui;
+            font-weight: 400;
+            font-style: normal;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-3px) scale(1.05) !important;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.8),
+                        0 0 20px rgba(0, 191, 255, 0.8);
+        }
+        
+        .start-btn:active {
+            transform: translateY(1px) scale(0.98);
+        }
+        
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .start-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Game Icons */
+        .game-icon {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0;
+            z-index: 1;
+            animation: iconAppear 0.5s forwards, floatIcon 8s infinite ease-in-out;
+            color: #8a2be2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 5px #00bfff);
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .game-icon:hover, .game-icon:active {
+            transform: scale(1.3) rotate(15deg) !important;
+            filter: drop-shadow(0 0 15px #8a2be2);
+            color: #00bfff;
+        }
+        
+        
+        /* Control Circuit Lines */
+        .control-circuit-horizontal {
+            position: absolute;
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #8a2be2, #00bfff, transparent);
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            animation: circuitPulse 4s infinite ease-in-out;
+        }
+        
+        .control-circuit-vertical {
+            position: absolute;
+            width: 2px;
+            height: 30px;
+            background: linear-gradient(to bottom, transparent, #8a2be2, #00bfff, transparent);
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            animation: circuitPulse 4s infinite ease-in-out 0.5s;
+        }
+        
+        /* Diamond Decorations */
+        .diamond {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #8a2be2;
+            transform: rotate(45deg);
+            z-index: 1;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards, diamondRotate 10s linear infinite;
+            box-shadow: 0 0 10px #00bfff;
+            transition: all 0.3s ease;
+        }
+        
+        .diamond:hover, .diamond:active {
+            background: #00bfff;
+            box-shadow: 0 0 15px #8a2be2;
+            transform: rotate(45deg) scale(1.3);
+        }
+        
+        /* Royal Corner Borders */
+        .royal-corner {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 3px solid;
+            border-image: linear-gradient(45deg, #8a2be2, #00bfff) 1;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .royal-corner:hover, .royal-corner:active {
+            border-image: linear-gradient(45deg, #00bfff, #8a2be2) 1;
+        }
+        
+        .royal-top-left {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            clip-path: polygon(0 0, 100% 0, 100% 30%, 70% 30%, 70% 70%, 30% 70%, 30% 100%, 0 100%);
+        }
+        
+        .royal-top-right {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 70% 100%, 70% 70%, 30% 70%, 30% 30%, 0 30%);
+        }
+        
+        .royal-bottom-left {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+            clip-path: polygon(0 0, 30% 0, 30% 30%, 70% 30%, 70% 70%, 100% 70%, 100% 100%, 0 100%);
+        }
+        
+        .royal-bottom-right {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            clip-path: polygon(0 70%, 30% 70%, 30% 30%, 70% 30%, 70% 0, 100% 0, 100% 100%, 0 100%);
+        }
+        
+        /* Animations */
+        @keyframes cardAppear {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes iconAppear {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 0.8; transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(138, 43, 226, 0.5), 0 0 10px rgba(0, 191, 255, 0.5); }
+            50% { transform: scale(1.03); box-shadow: 0 0 10px rgba(138, 43, 226, 0.8), 0 0 10px rgba(0, 191, 255, 0.8); }
+        }
+        
+        @keyframes decodeChar {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes circuitPulse {
+            0% { opacity: 0.2; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0.2; }
+        }
+        
+        @keyframes titleSlideIn {
+            0% { opacity: 0; transform: translateX(-50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes subtitleSlideIn {
+            0% { opacity: 0; transform: translateX(50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes buttonScaleUp {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes diamondRotate {
+            0% { transform: rotate(45deg); }
+            100% { transform: rotate(405deg); }
+        }
+        
+        @keyframes diamondRotateReverse {
+            0% { transform: rotate(45deg); }
+            100% { transform: rotate(-315deg); }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .main-title {
+                font-size: 3rem;
+                word-spacing: 20px;
+            }
+            
+            .hud-corner {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .floating-card {
+                width: 60px;
+                height: 85px;
+                font-size: 1.6rem;
+            }
+            
+            .start-btn {
+                padding: 14px 40px;
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.2rem;
+                letter-spacing: 2px;
+                word-spacing: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .slogan {
+                font-size: 1rem;
+                padding: 0 20px;
+                margin-bottom: 30px;
+            }
+            
+            .hud-corner {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .hud-center {
+                width: 200px;
+                height: 70px;
+            }
+            
+            .floating-card {
+                width: 50px;
+                height: 70px;
+                font-size: 1.4rem;
+            }
+            
+            /* Tablet-specific card positions */
+            .floating-card:nth-child(1) { top: 15%; left: 5%; }
+            .floating-card:nth-child(2) { top: 25%; left: 10%; }
+            .floating-card:nth-child(3) { top: 60%; left: 7%; }
+            .floating-card:nth-child(4) { top: 70%; left: 13%; }
+            .floating-card:nth-child(5) { top: 20%; right: 5%; }
+            .floating-card:nth-child(6) { top: 30%; right: 10%; }
+            .floating-card:nth-child(7) { top: 65%; right: 7%; }
+            .floating-card:nth-child(8) { top: 75%; right: 13%; }
+            
+            .start-btn {
+                padding: 12px 35px;
+                font-size: 1.1rem;
+            }
+            
+            .game-controls {
+                bottom: 20px;
+                gap: 15px;
+            }
+            
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .control-circuit-horizontal {
+                width: 180px;
+                bottom: 70px;
+            }
+            
+            .control-circuit-vertical {
+                bottom: 70px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 1.8rem;
+                word-spacing: 5px;
+                letter-spacing: 1px;
+            }
+            
+            .title-word {
+                margin: 0 5px;
+            }
+            
+            .hud-corner {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .floating-card {
+                width: 40px;
+                height: 60px;
+                font-size: 1.2rem;
+            }
+            
+            .card-1 { top: 15% !important; left: 5% !important; }
+    .card-2 { top: 25% !important; left: 10% !important; }
+    .card-3 { top: 80% !important; left: 7% !important; }
+    .card-4 { top: 70% !important; left: 13% !important; }
+    .card-5 { top: 15% !important; right: 5% !important; }
+    .card-6 { top: 25% !important; right: 10% !important; }
+    .card-7 { top: 80% !important; right: 7% !important; }
+    .card-8 { top: 70% !important; right: 13% !important; }
+
+    /* Mobile-specific game icon positions */
+    .icon-1 { top: 15% !important; left: 36% !important; }
+    .icon-2 { top: 25% !important; right: 30% !important; }
+    .icon-3 { bottom: 10% !important; left: 30% !important; }
+    .icon-4 { bottom: 25% !important; right: 35% !important; }
+            
+            .start-btn {
+                padding: 10px 30px;
+                font-size: 1rem;
+                letter-spacing: 2px;
+            }
+            
+            .game-controls {
+                gap: 10px;
+                bottom: 15px;
+            }
+            
+            .control-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .control-circuit-horizontal {
+                width: 150px;
+                bottom: 60px;
+            }
+            
+            .royal-corner {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .main-title {
+                font-size: 1.8rem;
+                word-spacing: 5px;
+                letter-spacing: 1px;
+            }
+            
+            .title-word {
+                margin: 0 5px;
+            }
+            
+            .hud-corner {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .floating-card {
+                width: 40px;
+                height: 60px;
+                font-size: 1.2rem;
+            }
+            
+            /* Mobile-specific card positions */
+            .floating-card:nth-child(1) { top: 10%; left: 5%; }
+            .floating-card:nth-child(2) { top: 20%; left: 10%; }
+            .floating-card:nth-child(3) { top: 55%; left: 7%; }
+            .floating-card:nth-child(4) { top: 65%; left: 13%; }
+            .floating-card:nth-child(5) { top: 15%; right: 5%; }
+            .floating-card:nth-child(6) { top: 25%; right: 10%; }
+            .floating-card:nth-child(7) { top: 60%; right: 7%; }
+            .floating-card:nth-child(8) { top: 70%; right: 13%; }
+        }
